@@ -1,0 +1,185 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link
+			href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css"
+			rel="stylesheet" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer" />
+		{% tailwind_css %}
+
+		<style>
+			/* Basic styling for the calendar */
+			.calendar {
+				display: grid;
+				grid-template-columns: repeat(7, 1fr);
+				gap: 5px;
+				margin: 20px;
+			}
+			.day,
+			.weekday {
+				border: 1px solid #ccc;
+				padding: 10px;
+				text-align: center;
+			}
+			.event {
+				background-color: yellow;
+			}
+			.navigation {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin: 20px;
+			}
+			.weekdays {
+				display: grid;
+				grid-template-columns: repeat(7, 1fr);
+				gap: 5px;
+				margin: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		{% include 'includes/doctorSidebar.html' %}
+
+		<div class="p-4 sm:ml-64">
+			<div class="mt-16">
+				{% if user.is_authenticated %}
+				<p class="text-left font-bold text-3xl text-green-900">
+					<span class="text-2xl text-gray-600">Welcome</span>
+					<br />
+					{{user.last_name}} {{user.first_name}}
+					<br />
+					<br />
+					<span class="text-lg text-gray-600">Here's your Schedules for Today</span>
+				</p>
+			</div>
+			{% endif %}
+
+			<div class="navigation">
+				<button id="prevYear"><<</button>
+				<button id="prevMonth"><</button>
+				<span id="currentMonthYear"></span>
+				<button id="nextMonth">></button>
+				<button id="nextYear">>></button>
+			</div>
+			<div class="weekdays">
+				<div class="weekday">Sunday</div>
+				<div class="weekday">Monday</div>
+				<div class="weekday">Tuesday</div>
+				<div class="weekday">Wednesday</div>
+				<div class="weekday">Thursday</div>
+				<div class="weekday">Friday</div>
+				<div class="weekday">Saturday</div>
+			</div>
+			<div
+				id="calendar"
+				class="calendar"></div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+		<script>
+			// calendar.js
+
+			document.addEventListener("DOMContentLoaded", function () {
+				const calendarElement = document.getElementById("calendar");
+				const currentMonthYearElement = document.getElementById("currentMonthYear");
+				const prevMonthButton = document.getElementById("prevMonth");
+				const nextMonthButton = document.getElementById("nextMonth");
+				const prevYearButton = document.getElementById("prevYear");
+				const nextYearButton = document.getElementById("nextYear");
+
+				let currentMonth = new Date().getMonth();
+				let currentYear = new Date().getFullYear();
+
+				generateCalendar(currentMonth, currentYear);
+
+				prevMonthButton.addEventListener("click", () => {
+					currentMonth--;
+					if (currentMonth < 0) {
+						currentMonth = 11;
+						currentYear--;
+					}
+					generateCalendar(currentMonth, currentYear);
+				});
+
+				nextMonthButton.addEventListener("click", () => {
+					currentMonth++;
+					if (currentMonth > 11) {
+						currentMonth = 0;
+						currentYear++;
+					}
+					generateCalendar(currentMonth, currentYear);
+				});
+
+				prevYearButton.addEventListener("click", () => {
+					currentYear--;
+					generateCalendar(currentMonth, currentYear);
+				});
+
+				nextYearButton.addEventListener("click", () => {
+					currentYear++;
+					generateCalendar(currentMonth, currentYear);
+				});
+
+				function generateCalendar(month, year) {
+					const daysInMonth = new Date(year, month + 1, 0).getDate();
+					const firstDay = new Date(year, month, 1).getDay();
+					const monthNames = [
+						"January",
+						"February",
+						"March",
+						"April",
+						"May",
+						"June",
+						"July",
+						"August",
+						"September",
+						"October",
+						"November",
+						"December",
+					];
+
+					currentMonthYearElement.textContent = `${monthNames[month]} ${year}`;
+
+					calendarElement.innerHTML = "";
+
+					// Create empty days for the previous month
+					for (let i = 0; i < firstDay; i++) {
+						const emptyDiv = document.createElement("div");
+						emptyDiv.classList.add("day");
+						calendarElement.appendChild(emptyDiv);
+					}
+
+					// Create days for the current month
+					for (let day = 1; day <= daysInMonth; day++) {
+						const dayDiv = document.createElement("div");
+						dayDiv.classList.add("day");
+						dayDiv.textContent = day;
+						dayDiv.addEventListener("click", () => addEvent(day, month, year));
+						calendarElement.appendChild(dayDiv);
+					}
+				}
+
+				function addEvent(day, month, year) {
+					const eventText = prompt("Enter event details:");
+					if (eventText) {
+						const dayDivs = calendarElement.querySelectorAll(".day");
+						dayDivs[day + new Date(year, month, 1).getDay() - 1].classList.add("event");
+						dayDivs[day + new Date(year, month, 1).getDay() - 1].innerHTML += `<br>${eventText}`;
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

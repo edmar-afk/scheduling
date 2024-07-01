@@ -1,0 +1,73 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link
+			href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css"
+			rel="stylesheet" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer" />
+		{% tailwind_css %}
+
+		<style>
+			/* Basic styling for the calendar */
+			.calendar {
+				display: grid;
+				grid-template-columns: repeat(7, 1fr);
+				gap: 5px;
+				margin: 20px;
+			}
+			.day,
+			.weekday {
+				border: 1px solid #ccc;
+				padding: 10px;
+				text-align: center;
+			}
+			.event {
+				background-color: yellow;
+			}
+			.navigation {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin: 20px;
+			}
+			.weekdays {
+				display: grid;
+				grid-template-columns: repeat(7, 1fr);
+				gap: 5px;
+				margin: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		{% include 'includes/residentSidebar.html' %}
+
+		<div class="p-4 sm:ml-64">
+			<div class="mt-16">
+				{% if user.is_authenticated %}
+				<p class="text-left font-bold text-3xl text-green-900">
+					<span class="text-2xl text-gray-600">Welcome</span>
+					<br />
+					{{user.first_name}}
+					<br />
+					<br />
+					<span class="text-lg text-gray-600">You want to set an Appointment today?</span>
+				</p>
+			</div>
+			{% endif %}
+
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+		
+	</body>
+</html>

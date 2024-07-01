@@ -1,0 +1,165 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Django Tailwind</title>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<meta
+			http-equiv="X-UA-Compatible"
+			content="ie=edge" />
+		{% tailwind_css %}
+		<link
+			rel="stylesheet"
+			href="{% static 'css/style.css' %}" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer" />
+	</head>
+
+	<body class="bg">
+		{% include 'includes/navbar.html' %}
+
+		<section class="py-40">
+			<div class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
+				<a
+					href="#"
+					class="flex items-center mb-6 text-2xl font-semibold text-gray-900">
+					<img
+						class="mr-2 rounded-full"
+						width="100"
+						src="{% static 'img/logo.jpg' %}"
+						alt="logo" />
+				</a>
+				<div class="w-full bg-white/80 rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0">
+					<div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+						<h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+							Sign in to your account
+						</h1>
+						{% for message in messages %} {% if message.level_tag == 'success' %}
+						<p class="text-center text-green-600 font-bold mt-4 mb-4 text-md">{{message}}</p>
+						{% else %}
+						<p class="text-center text-red-400 font-bold mt-4 mb-4 text-md">{{message}}</p>
+						{%endif%} {% endfor %}
+						<form
+							class="space-y-4 md:space-y-6"
+							action="#"
+							method="post"
+							enctype="multipart/form-data">
+							{% csrf_token %}
+							<div>
+								<label
+									for="fullname"
+									class="block mb-2 text-sm font-medium text-gray-900">
+									Full Name:
+								</label>
+								<input
+									type="text"
+									name="fullname"
+									id="fullname"
+									class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+									placeholder="Cardo Dalisay"
+									required="" />
+							</div>
+							<div>
+								<label
+									for="address"
+									class="block mb-2 text-sm font-medium text-gray-900">
+									Address:
+								</label>
+								<input
+									type="text"
+									name="address"
+									id="address"
+									class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+									placeholder="Dinas, Zamboanga del Sur"
+									required="" />
+							</div>
+							<div>
+								<label
+									for="role"
+									class="block mb-2 text-sm font-medium text-gray-900">
+									Who are you?
+								</label>
+								<select
+									id="role"
+									name="role"
+									class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+									<option
+										selected
+										value="Doctor">
+										I'm A doctor
+									</option>
+									<option value="Dentist">I'm a Dentist</option>
+									<option value="Nurse">I'm a Nurse</option>
+									<option value="Resident">I'm a Resident</option>
+								</select>
+							</div>
+							<div>
+								<label
+									for="username"
+									class="block mb-2 text-sm font-medium text-gray-900">
+									Username:
+								</label>
+								<input
+									type="text"
+									name="username"
+									id="username"
+									class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+									placeholder="dalisayCardo123"
+									required="" />
+							</div>
+							<div>
+								<label
+									for="password"
+									class="block mb-2 text-sm font-medium text-gray-900">
+									Password
+								</label>
+								<input
+									type="password"
+									name="password1"
+									id="password"
+									placeholder="••••••••"
+									class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+									required="" />
+							</div>
+							<div>
+								<label
+									for="password"
+									class="block mb-2 text-sm font-medium text-gray-900">
+									Retype Password
+								</label>
+								<input
+									type="password"
+									name="password2"
+									id="password"
+									placeholder="••••••••"
+									class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+									required="" />
+							</div>
+
+							<button
+								type="submit"
+								class="w-full text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+								Sign in
+							</button>
+							<p class="text-sm font-light text-gray-900">
+								Already have an account yet?
+								<a
+									href="{% url 'homepage' %}"
+									class="font-medium text-green-600 hover:underline">
+									Login
+								</a>
+							</p>
+						</form>
+					</div>
+				</div>
+			</div>
+		</section>
+	</body>
+</html>

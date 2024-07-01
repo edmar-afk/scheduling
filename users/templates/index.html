@@ -1,0 +1,106 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Homepage</title>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<meta
+			http-equiv="X-UA-Compatible"
+			content="ie=edge" />
+		{% tailwind_css %}
+		<link
+			rel="stylesheet"
+			href="{% static 'css/style.css' %}" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer" />
+	</head>
+
+	<body class="bg">
+		{% include 'includes/navbar.html' %}
+
+		<div class="font-[sans-serif]">
+			<div class="min-h-screen flex fle-col items-center justify-center py-6 px-4 mt-12">
+				<div class="grid md:grid-cols-2 items-center gap-10 max-w-6xl w-full">
+					<div>
+						<img
+							src="{% static 'img/logo.jpg' %}"
+							width="150"
+							alt=""
+							class="rounded-full flex justify-center mx-auto mb-4" />
+						<h2 class="lg:text-4xl text-3xl font-extrabold lg:leading-[55px] text-white text-center">
+							RHU DINAS HEALTHCARE APPOINTMENT SCHEDULING SYSTEM
+						</h2>
+						<p class="text-sm mt-12 text-white">
+							Disclaimer!
+							<br />
+							<br />
+							This System is for educational purposes only everthing in the system are gathered from DINAS RURAL HEALTH
+							UNIT and other sources.
+						</p>
+						<p class="text-sm mt-12 text-white">
+							Copyright &copy Dinas Municipal Health Unit | All Rights Reserved 2023
+						</p>
+					</div>
+
+					<form
+						class="max-w-md md:ml-auto w-full"
+						method="post"
+						enctype="multipart/form-data">
+						{% csrf_token %}
+						<h3 class="text-white text-3xl font-extrabold mb-8">Please Login to proceed</h3>
+
+						{% for message in messages %} {% if message.level_tag == 'success' %}
+						<p class="text-center text-green-400 font-bold mt-4 mb-4 text-md">{{message}}</p>
+						{% else %}
+						<p class="text-center text-red-400 font-bold mt-4 mb-4 text-md">{{message}}</p>
+						{%endif%} {% endfor %}
+
+						<div class="space-y-4">
+							<div>
+								<input
+									name="username"
+									type="text"
+									required
+									class="bg-gray-100 w-full text-sm text-gray-800 px-4 py-3.5 rounded-md outline-green-400"
+									placeholder="Enter your Username" />
+							</div>
+							<div>
+								<input
+									name="password"
+									type="password"
+									required
+									class="bg-gray-100 w-full text-sm text-gray-800 px-4 py-3.5 rounded-md outline-green-400"
+									placeholder="Enter your Password" />
+							</div>
+						</div>
+
+						<div class="!mt-8 flex flex-row items-center">
+							<button
+								type="submit"
+								name="submit"
+								class="w-full shadow-xl mx-2 py-2.5 px-4 text-sm font-semibold rounded text-white bg-green-400 hover:bg-blue-700 focus:outline-none duration-300">
+								<i class="fas fa-door-open"></i>
+								Log in
+							</button>
+							<a
+								href="{% url 'register' %}"
+								class="w-full text-center mx-2 shadow-xl py-2.5 px-4 text-sm font-semibold rounded text-white bg-red-400 hover:bg-red-700 focus:outline-none duration-300">
+								<i
+									class="fa fa-user-plus"
+									aria-hidden="true"></i>
+								Signup
+							</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
