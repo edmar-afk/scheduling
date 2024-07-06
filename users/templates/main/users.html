@@ -1,0 +1,92 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link
+			href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css"
+			rel="stylesheet" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer" />
+		{% tailwind_css %}
+	</head>
+	<body>
+		{% include 'includes/adminSidebar.html' %}
+
+		<div class="p-4 sm:ml-64">
+			<div class="mt-16 font-bold text-3xl">Accept Users</div>
+			{% for message in messages %} {% if message.level_tag == 'success' %}
+			<p class="text-left text-green-800 font-bold mt-12 mb-4 text-md">{{message}}</p>
+			{% else %}
+			<p class="text-left text-red-400 font-bold mt-12 mb-4 text-md">{{message}}</p>
+			{%endif%} {% endfor %}
+			<div class="mt-4 flex flex-row justify-evenly">
+				{% for list in users %}
+
+				<div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-2xl">
+					<a href="#">
+						<center>
+							<img
+								class="rounded-t-lg mt-8"
+								src="{% static 'img/users.png' %}"
+								width="100"
+								alt="" />
+						</center>
+					</a>
+					<div class="p-5">
+						<a href="#">
+							<h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 flex items-center">
+								{{list.first_name}} -{% if list.is_staff == True %}
+								<span class="text-sm ml-2 text-green-400 font-bold">Account Approved</span>
+								{% else %}
+								<span class="text-sm ml-2 text-red-400 font-bold">Account Rejected</span>
+								{% endif %}
+							</h5>
+						</a>
+						<p class="mb-3 font-normal text-gray-700">
+							<b class="underline">{{list.first_name}}</b>
+							is a
+							<b class="underline">{{list.last_name}}</b>
+							from
+							<b class="underline">{{list.email}}</b>
+							who joined in our system at
+							<b class="underline">{{list.date_joined}}</b>
+						</p> <br>
+						{% if list.is_staff == True %}
+						<a
+							href="{% url 'declineUser' list.id %}"
+							class="font-medium bg-red-600 text-white py-1.5 px-3 rounded-xl hover:underline mx-2">
+							<i
+								class="fa fa-times-circle"
+								aria-hidden="true"></i>
+							Reject User
+						</a>
+
+						{% else %}
+						<a
+							href="{% url 'acceptUser' list.id %}"
+							class="font-medium bg-green-600 text-white py-1.5 px-3 rounded-xl hover:underline mx-2">
+							<i
+								class="fa fa-check-circle"
+								aria-hidden="true"></i>
+							Approve User
+						</a>
+						{% endif %}
+					</div>
+				</div>
+
+				{% endfor %}
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+	</body>
+</html>

@@ -1,0 +1,50 @@
+{% load static tailwind_tags %}<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Homepage</title>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<meta
+			http-equiv="X-UA-Compatible"
+			content="ie=edge" />
+		{% tailwind_css %}
+		<link
+			rel="stylesheet"
+			href="{% static 'css/style.css' %}" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer" />
+	</head>
+
+	<body class="bg">
+		{% include 'includes/navbar.html' %}
+
+		<div class="font-[sans-serif]">
+			<div class="min-h-screen flex fle-col items-center justify-center py-6 px-4 mt-12">
+				<div class="grid md:grid-cols-2 items-center gap-10 max-w-6xl w-full">
+					<div>
+						<p class="text-2xl mt-12 text-white">
+							This system is focuses in setting appointment schedule in health care problems. RHU-Dinas Health Care
+							Appointment Scheduling Sytem is to help the residents of Dinas who are distant from the RHU facility. This
+							system is to be used exlusively in the Municipality of Dinas.
+						</p>
+						<p class="text-sm mt-12 text-white">
+							Copyright &copy Dinas Municipal Health Unit | All Rights Reserved 2023
+						</p>
+					</div>
+
+					<div class="max-w-md md:ml-auto w-full">
+						<img
+							src="{% static 'img/health.png' %}"
+							alt="" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

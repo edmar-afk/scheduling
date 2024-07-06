@@ -1,4 +1,5 @@
-{% load static %}<nav class="fixed top-0 z-50 w-full bg-gradient-to-r from-green-700 to-green-950">
+{% load static %}
+<nav class="fixed top-0 z-50 w-full bg-gradient-to-r from-green-700 to-green-950">
 	<div class="px-3 py-3 lg:px-5 lg:pl-3">
 		<div class="flex items-center justify-between">
 			<div class="flex items-center justify-start rtl:justify-end">
@@ -45,15 +46,34 @@
 		<ul class="space-y-2 font-medium">
 			<li>
 				<a
-					href="#"
+					href="{% url 'dentistDashboard' %}"
 					class="flex items-center p-2 text-white rounded-lg hover:bg-green-400 group">
 					<i
 						class="fa fa-calendar w-5 h-5 text-white transition duration-75 group-hover:text-white"
 						aria-hidden="true"></i>
-					<span class="ms-3">Set Appointment</span>
+					<span class="ms-3">Set Schedule</span>
 				</a>
 			</li>
-			
+			<li>
+				<a
+					href="{% url 'dentistPatients' %}"
+					class="flex items-center p-2 text-white rounded-lg hover:bg-green-400 group">
+					<i
+						class="fas fa-users w-5 h-5 text-white transition duration-75 group-hover:text-white"
+						aria-hidden="true"></i>
+					<span class="ms-3">Patients List</span>
+				</a>
+			</li>
+			<li>
+				<a
+					href="{% url 'dentistAppointment' %}"
+					class="flex items-center p-2 text-white rounded-lg hover:bg-green-400 group">
+					<i
+						class="fas fa-notes-medical w-5 h-5 text-white transition duration-75 group-hover:text-white"
+						aria-hidden="true"></i>
+					<span class="ms-3">Dental Appointments</span>
+				</a>
+			</li>
 			<li>
 				<a
 					href="{% url 'logoutUser' %}"

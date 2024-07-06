@@ -1,5 +1,4 @@
-{% load static tailwind_tags %}
-<!DOCTYPE html>
+{% load static tailwind_tags %}<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -18,12 +17,15 @@
 			integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
 			crossorigin="anonymous"
 			referrerpolicy="no-referrer" />
+		<link
+			href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css"
+			rel="stylesheet" />
 	</head>
 	<body>
-		{% include 'includes/adminSidebar.html' %}
+		{% include 'includes/nurseSidebar.html' %}
 
 		<div class="p-4 sm:ml-64">
-			<p class="text-gray-800 mt-24 mb-14 font-bold text-2xl">Lists of Users</p>
+			<p class="text-gray-800 mt-24 mb-4 font-bold text-2xl">Patients' Clearance</p>
 			{% for message in messages %} {% if message.level_tag == 'success' %}
 			<p class="text-left text-green-400 font-bold mt-4 mb-4 text-md">{{message}}</p>
 			{% else %}
@@ -36,72 +38,238 @@
 							<th
 								scope="col"
 								class="px-6 py-3">
-								name
+								Patient Name
 							</th>
 							<th
 								scope="col"
 								class="px-6 py-3">
-								Address
+								Status
 							</th>
 							<th
 								scope="col"
 								class="px-6 py-3">
-								Role
-							</th>
-
-							<th
-								scope="col"
-								class="px-6 py-3">
-								Action
+								Clearance
 							</th>
 						</tr>
 					</thead>
 					<tbody>
-						{% for user in users %}
+						{% for list in clearance %}
 						<tr class="bg-white even:bg-green-200">
 							<td
 								scope="row"
 								class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-								{{user.first_name}}
+								{{list.name}}
 							</td>
-							<td class="px-6 py-4">{{user.email}}</td>
-							<td class="px-6 py-4">{{user.last_name}}</td>
-							<td class="px-6 py-4">
-								{% if user.is_staff == True %}
-								<a
-									href="{% url 'declineUser' user.id %}"
-									class="font-medium text-green-600 hover:underline mx-2">
-									<i
-										class="fa fa-check-circle"
-										aria-hidden="true"></i>
-									User ccepted
-								</a>
+							<td
+								scope="row"
+								class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+								{{list.status}}
+							</td>
 
-								{% else %}
-								<a
-									href="{% url 'acceptUser' user.id %}"
-									class="font-medium text-red-600 hover:underline mx-2">
+							<td class="px-6 py-4">
+								<button
+									data-modal-target="clearance-{{list.id}}"
+									data-modal-toggle="clearance-{{list.id}}"
+									class="font-medium text-blue-600 hover:underline mx-2">
 									<i
-										class="fa fa-times-circle"
+										class="fa fa-eye"
 										aria-hidden="true"></i>
-									User Declined
-								</a>
-								{% endif %}
-								<a
-									href="{% url 'removeUser' user.id %}"
-									class="font-medium text-red-600 hover:underline mx-2">
-									<i
-										class="fa fa-trash"
-										aria-hidden="true"></i>
-									Remove User
-								</a>
+									View Clearance
+								</button>
 							</td>
 						</tr>
+
+						<div
+							id="clearance-{{list.id}}"
+							tabindex="-1"
+							class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+							<div class="relative p-4 w-full max-w-2xl max-h-full">
+								<div class="relative bg-white rounded-lg shadow-2xl">
+									<button
+										type="button"
+										class="absolute z-20 top-4 end-4 text-red-400 bg-red-200 hover:text-red-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+										data-modal-hide="clearance-{{list.id}}">
+										<svg
+											class="w-3 h-3"
+											aria-hidden="true"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 14 14">
+											<path
+												stroke="currentColor"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+										</svg>
+										<span class="sr-only">Close modal</span>
+									</button>
+									<div class="p-4 md:p-5 text-center">
+										<div class="font-[sans-serif] relative">
+											<div class="h-[240px] font-[sans-serif]">
+												<img
+													src="{% static 'img/bg.jpg' %}"
+													alt="Banner Image"
+													class="w-full h-full object-cover" />
+											</div>
+
+											<div class="relative -mt-40 m-4">
+												<div
+													class="bg-white w-full mx-auto shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] p-8 rounded-2xl">
+													<div class="mb-12">
+														<h3 class="text-gray-800 text-3xl font-bold text-center">Clearance of {{list.name}}</h3>
+														<p class="text-sm text-gray-600">Setting a <b>{{list.status}}</b> schedule to <b>{{list.doctor.last_name}} {{list.doctor.first_name}}</b></p>
+													</div>
+
+													<div>
+														<label class="text-gray-800 text-xs block mb-2 text-left">Patient Name</label>
+														<div class="relative flex items-center">
+															<input
+																name="name"
+																type="text"
+																required
+																class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 px-2 py-3 outline-none"
+																placeholder="{{list.name}}"
+																value="{{list.name}}"
+																disabled />
+															<svg
+																xmlns="http://www.w3.org/2000/svg"
+																fill="#bbb"
+																stroke="#bbb"
+																class="w-[18px] h-[18px] absolute right-2"
+																viewBox="0 0 24 24">
+																<circle
+																	cx="10"
+																	cy="7"
+																	r="6"
+																	data-original="#000000"></circle>
+																<path
+																	d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"
+																	data-original="#000000"></path>
+															</svg>
+														</div>
+													</div>
+
+													<div class="mt-8 flex flex-row justify-between w-full">
+														<div class="w-full mr-2">
+															<label class="text-gray-800 text-xs block mb-2 text-left">Age</label>
+															<div class="relative flex items-center">
+																<input
+																	name="email"
+																	type="text"
+																	placeholder="{{list.age}}"
+																	value="{{list.age}}"
+																	disabled
+																	class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 px-2 py-3 outline-none"
+																	placeholder="Enter email" />
+																<i
+																	class="fa fa-hashtag w-[18px] h-[18px] absolute right-2 text-green-600"
+																	aria-hidden="true"></i>
+															</div>
+														</div>
+
+														<div class="w-full ml-2">
+															<label class="text-gray-800 text-xs block mb-2 text-left">Gender</label>
+															<div class="relative flex items-center">
+																<input
+																	name="email"
+																	type="text"
+																	placeholder="{{list.gender}}"
+																	value="{{list.gender}}"
+																	disabled
+																	required
+																	class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 px-2 py-3 outline-none"
+																	placeholder="Enter email" />
+																<i
+																	class="fa-solid fa-venus-mars w-[18px] h-[18px] absolute right-2 text-purple-400"></i>
+															</div>
+														</div>
+													</div>
+
+													<div class="mt-8 flex flex-row justify-between w-full">
+														<div class="w-full mr-2">
+															<label class="text-gray-800 text-xs block mb-2 text-left">Date</label>
+															<div class="relative flex items-center">
+																<input
+																	name="email"
+																	type="text"
+																	placeholder="{{ list.date|date:'M d, Y' }}"
+																	value="{{ list.date|date:'M d, Y' }}"
+																	disabled
+																	class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 px-2 py-3 outline-none"
+																	placeholder="Enter email" />
+																<i
+																	class="fa fa-hashtag w-[18px] h-[18px] absolute right-2 text-green-600"
+																	aria-hidden="true"></i>
+															</div>
+														</div>
+
+														<div class="w-full ml-2">
+															<label class="text-gray-800 text-xs block mb-2 text-left">Phone Number</label>
+															<div class="relative flex items-center">
+																<input
+																	name="email"
+																	type="text"
+																	placeholder="{{list.phone_num}}"
+																	value="{{list.phone_num}}"
+																	disabled
+																	required
+																	class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 px-2 py-3 outline-none"
+																	placeholder="Enter email" />
+																<i
+																	class="fa-solid fa-venus-mars w-[18px] h-[18px] absolute right-2 text-purple-400"></i>
+															</div>
+														</div>
+													</div>
+
+													<div class="mt-8">
+														<label class="text-gray-800 text-xs block mb-2 text-left">Address</label>
+														<div class="relative flex items-center">
+															<input
+																name="name"
+																type="text"
+																required
+																class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 px-2 py-3 outline-none"
+																placeholder="{{list.barangay}}"
+																value="{{list.barangay}}"
+																disabled />
+															<svg
+																xmlns="http://www.w3.org/2000/svg"
+																fill="#bbb"
+																stroke="#bbb"
+																class="w-[18px] h-[18px] absolute right-2"
+																viewBox="0 0 24 24">
+																<circle
+																	cx="10"
+																	cy="7"
+																	r="6"
+																	data-original="#000000"></circle>
+																<path
+																	d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"
+																	data-original="#000000"></path>
+															</svg>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<button
+											data-modal-hide="clearance-{{list.id}}"
+											type="button"
+											class="py-2.5 mt-8 px-5 ms-3 text-sm font-medium text-red-200 focus:outline-none bg-red-600 rounded-lg border border-red-200 hover:bg-red-400 hover:text-white focus:z-10 focus:ring-4 duration-300">
+											Close
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
 						{% endfor %}
 					</tbody>
 				</table>
 			</div>
 		</div>
 
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 	</body>
 </html>

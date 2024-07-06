@@ -1,0 +1,67 @@
+{% load static tailwind_tags %}<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link
+			href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css"
+			rel="stylesheet" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer" />
+		{% tailwind_css %}
+
+		<link
+			href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css"
+			rel="stylesheet" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+		<style>
+			.fc-event .fc-title {
+				white-space: normal !important;
+				word-wrap: break-word !important;
+			}
+		</style>
+	</head>
+	<body>
+		{% include 'includes/adminSidebar.html' %}
+
+		<div class="p-4 sm:ml-64">
+			<p class="mt-24 font-bold text-3xl">Lists of Appointments</p>
+			<div class="mt-8">
+				{% for message in messages %} {% if message.level_tag == 'success' %}
+				<p class="text-center text-green-600 font-bold mt-4 mb-4 text-md">{{message}}</p>
+				{% else %}
+				<p class="text-center text-red-400 font-bold mt-4 mb-4 text-md">{{message}}</p>
+				{%endif%} {% endfor %}
+			</div>
+
+			<div
+				id="calendar"
+				class="mt-14"></div>
+		</div>
+		<script>
+			$(document).ready(function() {
+			    $('#calendar').fullCalendar({
+			        events: [
+			            {% for event in schedule %}
+			            {
+			                title: '{{ event.name }} has set an schedule on {{event.doctor.last_name}} {{event.doctor.first_name}}',
+			                start: '{{ event.date|date:"Y-m-d" }}'
+			            },
+			            {% endfor %}
+			        ]
+			    });
+			});
+		</script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
+	</body>
+</html>

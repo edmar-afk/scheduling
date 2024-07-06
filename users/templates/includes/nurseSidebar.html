@@ -50,10 +50,19 @@
 					<i
 						class="fa fa-calendar w-5 h-5 text-white transition duration-75 group-hover:text-white"
 						aria-hidden="true"></i>
-					<span class="ms-3">Set Appointment</span>
+					<span class="ms-3">Patient Clearance</span>
 				</a>
 			</li>
-			
+			<li>
+				<a
+					href="{% url 'nursePatientList' %}"
+					class="flex items-center p-2 text-white rounded-lg hover:bg-green-400 group">
+					<i
+						class="fa fa-users w-5 h-5 text-white transition duration-75 group-hover:text-white"
+						aria-hidden="true"></i>
+					<span class="ms-3">Patient List</span>
+				</a>
+			</li>
 			<li>
 				<a
 					href="{% url 'logoutUser' %}"

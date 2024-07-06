@@ -5,10 +5,33 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.contrib.auth import authenticate, login
+from django.db.models import Q
+from .models import Event, Message
+from datetime import datetime
 # Create your views here.
+
+
+def mainMessage(request):
+    feeback = Message.objects.all().order_by('-id')
+    
+    context = {
+        'feeback': feeback
+    }
+    
+    return render(request, 'main/messages.html', context)
 
 def mainLogin(request):
     return render(request, 'main/mainLogin.html')
+
+
+def mainUser(request):
+    users = User.objects.all().order_by('-id')
+    
+    context = {
+        'users': users,
+    }
+    return render(request, 'main/users.html', context)
+
 
 def mainDashboard(request):
     users = User.objects.all().order_by('-id')
@@ -19,6 +42,13 @@ def mainDashboard(request):
     
     return render(request, 'main/index.html', context)
 
+def mainAppointment(request):
+    schedule = Event.objects.filter(status='Approved').order_by('-id')
+    
+    context = {
+        'schedule': schedule,
+    }
+    return render(request, 'main/checkAppointment.html', context)
 
 def homepage(request):
     if request.method == 'POST':
@@ -72,28 +102,118 @@ def register(request):
 
 
 
+def doctorAppointment(request):
+    schedule = Event.objects.filter(
+    (Q(doctor__last_name='Doctor') | Q(doctor=request.user)) & Q(status='Approved')
+).order_by('-id')
+    
+    context = {
+        'schedule': schedule,
+    }
+    return render(request, 'doctor/checkAppointment.html', context)
+
 def doctorDashboard(request):
-    return render(request, 'doctor/index.html')
+    schedule = Event.objects.filter(Q(doctor__last_name='Doctor') | Q(doctor=request.user)).order_by('-id')
+    
+    context = {
+        'schedule': schedule,
+    }
+    return render(request, 'doctor/index.html', context)
 
-
+def doctorPatients(request):
+    schedule = Event.objects.filter(
+    (Q(doctor__last_name='Doctor') | Q(doctor=request.user)) & Q(status='Approved')
+).order_by('-id')
+    
+    context = {
+        'schedule': schedule,
+    }
+    return render(request, 'doctor/patientList.html', context)
 
 
 def residentDashboard(request):
-    return render(request, 'resident/index.html')
+    workers = User.objects.filter(Q(last_name='Doctor') | Q(last_name='Dentist'))
+    events = Event.objects.all()
+    if request.method == 'POST':
+        date_str = request.POST['date']
+        doctor_id = request.POST['doctor']
+        fullname = request.POST['fullname']
+        age = request.POST['age']
+        gender = request.POST['gender']
+        barangay = request.POST['barangay']
+        phone_num = request.POST['phone_num']
+
+        # Parse the date string to a datetime object
+        date = datetime.strptime(date_str, '%m/%d/%Y')
+
+        # Fetch the User instance for the doctor
+        doctor = User.objects.get(pk=doctor_id)
+       
+        new_schedule = Event.objects.create(status='Pending',doctor=doctor, date=date,age=age, name=fullname, gender=gender, barangay=barangay, phone_num=phone_num)
+        new_schedule.save()
+        messages.success(request, 'Schedule Requested')
+        return redirect(request.META.get('HTTP_REFERER'))
+
+    context = {
+        'workers': workers,
+        'events': events
+    }
+    return render(request, 'resident/index.html', context)
 
 
 
+def nursePatientList(request):
+    patients = Event.objects.filter(status='Approved').order_by('-id')
+    
+    context = {
+        'patients': patients
+    }
+    
+    return render(request, 'nurse/patientList.html', context)
 
 def nurseDashboard(request):
-    return render(request, 'nurse/index.html')
+    clearance = Event.objects.all().order_by('-id')
+    
+    context = {
+        'clearance': clearance
+    }
+    
+    return render(request, 'nurse/index.html', context)
 
 
 
+def dentistPatients(request):
+    schedule = Event.objects.filter(
+    (Q(doctor__last_name='Dentist') | Q(doctor=request.user)) & Q(status='Approved')
+).order_by('-id')
+    
+    context = {
+        'schedule': schedule,
+    }
+    return render(request, 'dentist/patientList.html', context)
+
+def dentistAppointment(request):
+    schedule = Event.objects.filter(
+    (Q(doctor__last_name='Dentist') | Q(doctor=request.user)) & Q(status='Approved')
+).order_by('-id')
+    
+    context = {
+        'schedule': schedule,
+    }
+    return render(request, 'dentist/checkAppointment.html', context)
 
 def dentistDashboard(request):
-    return render(request, 'dentist/index.html')
+    schedule = Event.objects.filter(Q(doctor__last_name='Dentist') | Q(doctor=request.user)).order_by('-id')
+    
+    context = {
+        'schedule': schedule,
+    }
+    return render(request, 'doctor/index.html', context)
 
-
+def removeMessage(request, message_id):
+    Message.objects.filter(id=message_id).delete()
+    messages.success(request, 'Message Removed')
+    return redirect(request.META.get('HTTP_REFERER'))
 
 def removeUser(request, user_id):
     User.objects.filter(id=user_id).delete()
@@ -121,3 +241,39 @@ def logoutUser(request):
     auth.logout(request)
     messages.success(request, "Logged out Successfully!")
     return redirect('homepage')
+
+
+
+
+
+def rejectRequest(request, sched_id):
+    event = Event.objects.get(pk=sched_id)
+    event.status = 'Rejected'
+    event.save()
+    # You can redirect to a success page or to the same page
+    messages.success(request, 'Request Rejected!')
+    return redirect(request.META.get('HTTP_REFERER'))
+
+def approveRequest(request, sched_id):
+    event = Event.objects.get(pk=sched_id)
+    event.status = 'Approved'
+    event.save()
+    # You can redirect to a success page or to the same page
+    messages.success(request, 'Request Approved!')
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+def about(request):
+    return render(request, 'about.html')
+
+def contact(request):
+    
+    if request.method == 'POST':
+        name = request.POST['fname']
+        message = request.POST['message']
+        
+        new_message = Message.objects.create(sender=name, message=message)
+        new_message.save()
+        messages.success(request, 'Message Sent!')
+    
+    return render(request, 'contact.html')

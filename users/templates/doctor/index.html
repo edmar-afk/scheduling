@@ -1,4 +1,5 @@
-{% load static tailwind_tags %}<!DOCTYPE html>
+{% load static tailwind_tags %}
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -29,13 +30,76 @@
 					{{user.last_name}} {{user.first_name}}
 					<br />
 					<br />
-					<span class="text-lg text-gray-600">Here's your Schedules for Today</span>
+					<span class="text-lg text-gray-600">Set schedule for your patients today!</span>
 				</p>
+			</div>
+			{% for message in messages %} {% if message.level_tag == 'success' %}
+			<p class="text-left text-green-800 font-bold mt-12 mb-4 text-md">{{message}}</p>
+			{% else %}
+			<p class="text-left text-red-400 font-bold mt-12 mb-4 text-md">{{message}}</p>
+			{%endif%} {% endfor %}
+			<div class="mt-4 flex flex-row justify-evenly">
+				{% for list in schedule %}
+				<div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-2xl">
+					<div class="flex flex-row items-center mb-4">
+						<i
+							class="fa fa-clock text-2xl animate-spin text-gray-500"
+							aria-hidden="true"></i>
+
+						<p class="ml-4 font-bold text-orange-700">{{list.status}} Request</p>
+					</div>
+					<a href="#">
+						<h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900">{{list.name}}</h5>
+					</a>
+					<p class="mb-3 font-normal text-gray-500">
+						Your patient from
+						<b>{{list.barangay}}</b>
+						requested an schedule in
+						<b>{{ list.date|date:'M d, Y' }}.</b>
+					</p>
+					<!-- <a
+						href="#"
+						class="inline-flex font-medium items-center text-blue-600 hover:underline">
+						View Clearance
+						<svg
+							class="w-3 h-3 ms-2.5 rtl:rotate-[270deg]"
+							aria-hidden="true"
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 18 18">
+							<path
+								stroke="currentColor"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M15 11v4.833A1.166 1.166 0 0 1 13.833 17H2.167A1.167 1.167 0 0 1 1 15.833V4.167A1.166 1.166 0 0 1 2.167 3h4.618m4.447-2H17v5.768M9.111 8.889l7.778-7.778" />
+						</svg>
+					</a> -->
+
+					<div class="flex flex-row items-center justify-evenly">
+						<a
+							href="{% url 'rejectRequest' list.id %}"
+							class="bg-red-700 text-white p-1.5 px-2 text-xs rounded-xl shadow-2xl hover:scale-110 duration-300">
+							<i
+								class="fa fa-times-circle"
+								aria-hidden="true"></i>
+							Reject Request
+						</a>
+						<a
+							href="{% url 'approveRequest' list.id %}"
+							class="bg-green-700 text-white p-1.5 px-2 text-xs rounded-xl shadow-2xl hover:scale-110 duration-300">
+							<i
+								class="fa fa-check-circle"
+								aria-hidden="true"></i>
+							Approve Request
+						</a>
+					</div>
+				</div>
+				{% endfor %}
 			</div>
 			{% endif %}
 		</div>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-		
 	</body>
 </html>

@@ -1,5 +1,4 @@
-{% load static tailwind_tags %}
-<!DOCTYPE html>
+{% load static tailwind_tags %}<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -18,34 +17,16 @@
 			referrerpolicy="no-referrer" />
 		{% tailwind_css %}
 
+		<link
+			href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css"
+			rel="stylesheet" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
 		<style>
-			/* Basic styling for the calendar */
-			.calendar {
-				display: grid;
-				grid-template-columns: repeat(7, 1fr);
-				gap: 5px;
-				margin: 20px;
-			}
-			.day,
-			.weekday {
-				border: 1px solid #ccc;
-				padding: 10px;
-				text-align: center;
-			}
-			.event {
-				background-color: yellow;
-			}
-			.navigation {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				margin: 20px;
-			}
-			.weekdays {
-				display: grid;
-				grid-template-columns: repeat(7, 1fr);
-				gap: 5px;
-				margin: 20px;
+			.fc-event .fc-title {
+				white-space: normal !important;
+				word-wrap: break-word !important;
 			}
 		</style>
 	</head>
@@ -55,19 +36,282 @@
 		<div class="p-4 sm:ml-64">
 			<div class="mt-16">
 				{% if user.is_authenticated %}
-				<p class="text-left font-bold text-3xl text-green-900">
-					<span class="text-2xl text-gray-600">Welcome</span>
+				<p class="text-left font-bold text-3xl text-gray-900">
+					<span class="text-2xl">Welcome</span>
 					<br />
 					{{user.first_name}}
 					<br />
 					<br />
-					<span class="text-lg text-gray-600">You want to set an Appointment today?</span>
+					<span class="text-lg">Who do you want to set an Appointment today?</span>
 				</p>
+				{% for message in messages %} {% if message.level_tag == 'success' %}
+				<p class="text-center text-green-600 font-bold mt-4 mb-4 text-md">{{message}}</p>
+				{% else %}
+				<p class="text-center text-red-400 font-bold mt-4 mb-4 text-md">{{message}}</p>
+				{%endif%} {% endfor %}
 			</div>
 			{% endif %}
+			<button
+				data-modal-target="popup-modal"
+				data-modal-toggle="popup-modal"
+				class="block text-white mt-4 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+				type="button">
+				<i class="fa fa-calendar" aria-hidden="true"></i> View Calendar
+			</button>
 
+			<div class="h-screen pt-12">
+				<!-- Card start -->
+				{% for list in workers %}
+				<div class="max-w-sm mx-auto bg-gray-100 rounded-lg overflow-hidden shadow-2xl">
+					<div class="border-b px-4 pb-6">
+						<div class="text-center my-4">
+							{% if list.last_name == 'Doctor' %}
+							<img
+								class="h-32 w-32 rounded-full border-4 border-white mx-auto my-4"
+								src="{% static 'img/doctor.jpg' %}"
+								alt="" />
+							{% endif %}
+							<div class="py-2">
+								<h3 class="font-bold text-2xl text-gray-800 mb-1">{{list.last_name}} {{list.first_name}}</h3>
+								<div class="inline-flex text-gray-700 items-center">
+									<svg
+										class="h-5 w-5 text-gray-400 mr-1"
+										fill="currentColor"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 24 24"
+										width="24"
+										height="24">
+										<path
+											class=""
+											d="M5.64 16.36a9 9 0 1 1 12.72 0l-5.65 5.66a1 1 0 0 1-1.42 0l-5.65-5.66zm11.31-1.41a7 7 0 1 0-9.9 0L12 19.9l4.95-4.95zM12 14a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+									</svg>
+									{{list.email}}
+								</div>
+							</div>
+						</div>
+						<div class="flex gap-2 px-2">
+							<button
+								data-modal-target="modal{{list.id}}"
+								data-modal-toggle="modal{{list.id}}"
+								class="flex-1 rounded-full text-white bg-green-600 antialiased font-bold hover:bg-green-800 px-4 py-2">
+								Fill up Form
+							</button>
+						</div>
+					</div>
+				</div>
 
+				<div
+					id="modal{{list.id}}"
+					tabindex="-1"
+					aria-hidden="true"
+					class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+					<div class="relative p-4 w-full max-w-2xl max-h-full">
+						<!-- Modal content -->
+						<div class="relative bg-white rounded-lg shadow">
+							<!-- Modal header -->
+							<div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-600">
+								<h3 class="text-xl font-semibold text-gray-900">
+									Set Appointment with {{list.last_name}} {{list.first_name}}
+								</h3>
+								<button
+									type="button"
+									class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+									data-modal-hide="modal{{list.id}}">
+									<svg
+										class="w-3 h-3"
+										aria-hidden="true"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 14 14">
+										<path
+											stroke="currentColor"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+									</svg>
+									<span class="sr-only">Close modal</span>
+								</button>
+							</div>
+							<!-- Modal body -->
+							<form
+								method="post"
+								enctype="multipart/form-data">
+								{% csrf_token %}
+								<div class="p-4 md:p-5 space-y-4">
+									<input
+										type="hidden"
+										name="doctor"
+										id="doctor"
+										class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+										placeholder="{{list.id}}"
+										value="{{list.id}}"
+										required="" />
+									<div class="relative w-full">
+										<p class="block mb-2 text-sm font-medium text-gray-900">Schedule:</p>
+										<div class="absolute top-7 inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+											<svg
+												class="w-4 h-4 text-gray-500"
+												aria-hidden="true"
+												xmlns="http://www.w3.org/2000/svg"
+												fill="currentColor"
+												viewBox="0 0 20 20">
+												<path
+													d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+											</svg>
+										</div>
+										<input
+											datepicker
+											id="default-datepicker"
+											type="text"
+											name="date"
+											class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 placeholder-gray-400"
+											placeholder="Select date" />
+									</div>
+									{% if user.is_authenticated %}
+									<div>
+										<label
+											for="fullname"
+											class="block mb-2 text-sm font-medium text-gray-900">
+											Full Name:
+										</label>
+										<input
+											type="text"
+											name="fullname"
+											id="fullname"
+											class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+											value="{{user.first_name}}" />
+									</div>
+
+									<div>
+										<label
+											for="gender"
+											class="block mb-2 text-sm font-medium text-gray-900">
+											Gender
+										</label>
+										<select
+											id="gender"
+											name="gender"
+											class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+											<option
+												selected
+												value="Male">
+												Male
+											</option>
+											<option value="Female">Female</option>
+										</select>
+									</div>
+									<div>
+										<label
+											for="barangay"
+											class="block mb-2 text-sm font-medium text-gray-900">
+											Address:
+										</label>
+										<input
+											type="text"
+											name="barangay"
+											id="barangay"
+											class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+											value="{{user.email}}" />
+									</div>
+									{% endif %}
+									<div>
+										<label
+											for="phone_num"
+											class="block mb-2 text-sm font-medium text-gray-900">
+											Phone Number:
+										</label>
+										<input
+											type="number"
+											name="phone_num"
+											id="phone_num"
+											class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+											placeholder="09123456789"
+											required="" />
+									</div>
+								</div>
+								<!-- Modal footer -->
+								<div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b">
+									<input
+										type="submit"
+										value="Set Appointment"
+										data-modal-hide="modal{{list.id}}"
+										class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" />
+									<button
+										data-modal-hide="modal{{list.id}}"
+										type="button"
+										class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-green-700 focus:z-10 focus:ring-4 focus:ring-gray-100 focus:ring-gray-70">
+										Decline
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+				<!-- Card end -->
+			</div>
+
+			<div
+				id="popup-modal"
+				tabindex="-1"
+				class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+				<div class="relative p-4 w-full max-w-[97%] max-h-full">
+					<div class="relative bg-white rounded-lg shadow=">
+						<button
+							type="button"
+							class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+							data-modal-hide="popup-modal">
+							<svg
+								class="w-3 h-3"
+								aria-hidden="true"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 14 14">
+								<path
+									stroke="currentColor"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+							</svg>
+							<span class="sr-only">Close modal</span>
+						</button>
+						<div class="p-4 md:p-5 text-center">
+							<i
+								class="fa fa-calendar mx-auto mb-4 mt-4 text-gray-400 text-4xl"
+								aria-hidden="true"></i>
+
+							<div
+								id="calendar"
+								class="mt-14"></div>
+
+							<button
+								data-modal-hide="popup-modal"
+								type="button"
+								class="py-2.5 mt-8 px-5 ms-3 text-sm font-medium text-red-200 focus:outline-none bg-red-600 rounded-lg border border-red-200 hover:bg-red-400 hover:text-white focus:z-10 focus:ring-4 duration-300">
+								Close
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			$(document).ready(function() {
+			    $('#calendar').fullCalendar({
+			        events: [
+			            {% for event in events %}
+			            {
+			                title: '{{ event.name }} has set an schedule for {{event.doctor.last_name}} {{ event.doctor.first_name }}',
+			                start: '{{ event.date|date:"Y-m-d" }}'
+			            },
+			            {% endfor %}
+			        ]
+			    });
+			});
+		</script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-		
+		<script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
 	</body>
 </html>

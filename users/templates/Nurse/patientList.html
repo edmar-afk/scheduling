@@ -1,0 +1,74 @@
+{% load static tailwind_tags %}<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+
+		{% tailwind_css %}
+		<link
+			href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css"
+			rel="stylesheet" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer" />
+		<link
+			href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css"
+			rel="stylesheet" />
+	</head>
+	<body>
+		{% include 'includes/nurseSidebar.html' %}
+
+		<div class="p-4 sm:ml-64">
+			<p class="text-gray-800 mt-24 mb-4 font-bold text-2xl">Patients List</p>
+			{% for message in messages %} {% if message.level_tag == 'success' %}
+			<p class="text-left text-green-400 font-bold mt-4 mb-4 text-md">{{message}}</p>
+			{% else %}
+			<p class="text-left text-red-400 font-bold mt-4 mb-4 text-md">{{message}}</p>
+			{%endif%} {% endfor %}
+			<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+				<table class="w-full text-sm text-left rtl:text-right text-gray-500">
+					<thead class="text-xs text-white uppercase bg-green-700">
+						<tr>
+							<th
+								scope="col"
+								class="px-6 py-3">
+								Patient Name
+							</th>
+							
+							<th
+								scope="col"
+								class="px-6 py-3">
+								Patients of
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for list in patients %}
+						<tr class="bg-white even:bg-green-200">
+							<td
+								scope="row"
+								class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+								{{list.name}}
+							</td>
+							
+							<td class="px-6 py-4">
+								{{list.doctor.last_name}} {{list.doctor.first_name}}
+							</td>
+						</tr>
+
+						
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+	</body>
+</html>
